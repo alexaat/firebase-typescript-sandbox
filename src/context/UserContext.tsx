@@ -20,7 +20,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
                 const u: CurrentUser = {
                     uid: uid,
                     name: '',
-                    nick: '',
+                    nick: user.displayName ? user.displayName : '',
                     email: email ? email : '',
                     password: '',
                     photoUrl: ''

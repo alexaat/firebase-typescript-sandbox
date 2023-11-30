@@ -1,7 +1,8 @@
-import { Stack } from '@mui/material';
+import { Stack, Button } from '@mui/material';
 import { signUp } from '../../services/firebase/auth';
 import { CurrentUser } from '../../types/CurrentUser';
 import { ProvideUser } from '../../context/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -9,6 +10,12 @@ const SignUp = () => {
 
     const currentUser = ProvideUser();
     console.log(currentUser);
+
+    const navigate = useNavigate();
+
+    const clickHandler = () => {
+        navigate('/signin');
+    }
 
     const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -38,6 +45,7 @@ const SignUp = () => {
                 <input type="email" id="email" name="fname" placeholder='email' />
                 <input type="password" id="password" name="password" placeholder='password' />
                 <input type="submit" value="Submit" />
+                <Button variant="text" onClick={clickHandler}>Already have account</Button>
             </Stack>
         </form >
 
