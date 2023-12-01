@@ -1,19 +1,32 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { CurrentUser } from "../types/CurrentUser";
-import { auth } from "../services/firebase/firebase-setup";
+import { auth, db } from "../services/firebase/firebase-setup";
 import { onAuthStateChanged } from "firebase/auth";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
+type T = {
+    curUser: (CurrentUser | null | undefined),
+    reload: () => void
+}
 
-const UserContext = createContext<CurrentUser | null | undefined>(null);
+const UserContext = createContext<T | null>(null);
 
 export const ProvideUser = () => useContext(UserContext)
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
-    const [currentUser, setCurrentUser] = useState<CurrentUser | null | undefined>();
+    const [curUser, setCurtUser] = useState<CurrentUser | null | undefined>(undefined);
+
+    const [refreshUser, setRefreshUser] = useState(1);
+
+    const reloadCurrentUser = () => setRefreshUser(Math.random());
 
     useEffect(() => {
-        onAuthStateChanged(auth, user => {
+
+        const unsubscribe = onAuthStateChanged(auth, user => {
+
+            setCurtUser(undefined)
+
             if (user) {
                 const uid = user.uid;
                 const email = user.email;
@@ -23,16 +36,29 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
                     nick: user.displayName ? user.displayName : '',
                     email: email ? email : '',
                     password: '',
-                    photoUrl: ''
+                    photoUrl: '',
+                    transport: []
                 }
-                setCurrentUser(u);
+
+                const q = query(collection(db, "users"), where("uid", "==", uid));
+                getDocs(q)
+                    .then(querySnapshot => {
+                        querySnapshot.forEach(doc => {
+                            u.name = doc.data().name;
+                            u.transport = doc.data().transport;
+                        })
+                        setCurtUser(u)
+                    })
+
+            } else {
+                setCurtUser(null)
             }
         });
-
-    }, []);
+        return unsubscribe
+    }, [refreshUser]);
 
     return (
-        <UserContext.Provider value={currentUser}>
+        <UserContext.Provider value={{ curUser, reload: reloadCurrentUser }}>
             {children}
         </UserContext.Provider>
     );

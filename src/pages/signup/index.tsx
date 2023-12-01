@@ -1,21 +1,23 @@
 import { Stack, Button } from '@mui/material';
-import { signUp } from '../../services/firebase/auth';
 import { CurrentUser } from '../../types/CurrentUser';
-import { ProvideUser } from '../../context/UserContext';
 import { useNavigate } from 'react-router-dom';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { auth } from '../../services/firebase/firebase-setup';
+import { collection, addDoc } from "firebase/firestore";
+import { db } from '../../services/firebase/firebase-setup';
+import { ProvideUser } from '../../context/UserContext';
 
 
 
 const SignUp = () => {
 
-    const currentUser = ProvideUser();
-    console.log(currentUser);
-
     const navigate = useNavigate();
 
     const clickHandler = () => {
-        navigate('/signin');
+        navigate('/');
     }
+
+    const props = ProvideUser();
 
     const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -30,10 +32,31 @@ const SignUp = () => {
             nick,
             email,
             password,
-            photoUrl: ''
+            photoUrl: '',
+            transport: []
         }
 
-        signUp(currentUser)
+        createUserWithEmailAndPassword(auth, email, password)
+            .then(userCredential => {
+
+                const user = userCredential.user;
+                const uid = userCredential.user.uid;
+
+                addDoc(collection(db, 'users'), {
+                    uid,
+                    name
+                })
+                    .then(() => {
+                        updateProfile(user, { displayName: currentUser.nick }).then(() => {
+                            props?.reload();
+                            navigate('/home')
+
+                        })
+                    })
+
+
+            })
+            .catch(err => alert(err))
     }
 
     return (

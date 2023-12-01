@@ -5,4 +5,5 @@ export interface CurrentUser {
     email: string,
     password: string,
     photoUrl: string,
+    transport: string[]
 }
