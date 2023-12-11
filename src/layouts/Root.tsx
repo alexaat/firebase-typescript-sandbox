@@ -28,6 +28,12 @@ const Root = () => {
                             </Stack>
                         </Box>
                         <Stack direction='row' sx={{ position: 'absolute', right: '8px', height: '100%', alignItems: 'center' }}>
+                            {
+                                props && props.curUser && props.curUser.photoUrl &&
+                                <Box component='img' src={props.curUser.photoUrl} sx={{width: '32px', height: '32px',  objectFit: 'contain'}}></Box>
+                            }
+
+                            
                             <Box sx={{ mr: 2 }}>
                                 <Stack spacing={1} direction='row'>
                                     <Typography>Name: {props?.curUser?.name} | </Typography>

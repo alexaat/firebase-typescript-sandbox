@@ -30,13 +30,14 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
             if (user) {
                 const uid = user.uid;
                 const email = user.email;
+                const url = user.photoURL;
                 const u: CurrentUser = {
                     uid: uid,
                     name: '',
                     nick: user.displayName ? user.displayName : '',
                     email: email ? email : '',
                     password: '',
-                    photoUrl: '',
+                    photoUrl: url ? url : '',
                     transport: []
                 }
 
