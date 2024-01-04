@@ -1,9 +1,9 @@
 import { Button, Stack } from "@mui/material";
 import { useNavigate } from 'react-router-dom';
-import { logIn } from "../../services/firebase/auth";
 import { auth } from "../../services/firebase/firebase-setup";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { ProvideUser } from "../../context/UserContext";
+import { firebaseLogIn } from "../../services/firebase/auth";
 
 const SignIn = () => {
 
@@ -13,12 +13,13 @@ const SignIn = () => {
         event.preventDefault();
         const email = (event.currentTarget as HTMLFormElement).email.value;
         const password = (event.currentTarget as HTMLFormElement).password.value;
+        firebaseLogIn(email, password);
 
-        signInWithEmailAndPassword(auth, email, password)
-            .then(() => {
-                navigate('/home')
-            })
-            .catch(err => alert(err))
+        // signInWithEmailAndPassword(auth, email, password)
+        //     .then(() => {
+        //         navigate('/home')
+        //     })
+        //     .catch(err => alert(err))
 
     }
 

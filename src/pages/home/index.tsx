@@ -3,13 +3,19 @@ import { ProvideUser } from "../../context/UserContext";
 import { Stack } from "@mui/material";
 import { auth, db } from "../../services/firebase/firebase-setup";
 import { collection, query, where, getDocs, updateDoc, doc } from "firebase/firestore";
+import {Typography, Box, Button} from "@mui/material";
+import { firebaseLogOut } from "../../services/firebase/auth";
 
 
 const Home = () => {
+    
+    const user = ProvideUser();
 
-    const props = ProvideUser();
+    const handleLogOut = () => firebaseLogOut();
+    
 
-    if (props?.curUser === null) {
+    /*
+    if (props?.currentUser === null) {
         return <Navigate to='/' />
     }
 
@@ -40,30 +46,36 @@ const Home = () => {
             })
             .catch(err => alert(err))
     }
+    */
 
     return (
         <>
-            {props?.curUser &&
+        <Stack direction='row'>
+        <Typography>{user?.email}</Typography>      
+        <Button variant="outlined" sx={{ color: '#000', ml: 2 }} onClick={handleLogOut}>Log OUT</Button>        
+        </Stack>
+
+            {/* {props?.currentUser &&
                 <Stack sx={{ ml: 1, mt: 1, width: '128px' }}>
                     <form onSubmit={handleClickNext}>
                         <Stack>
                             <div>
-                                <input type="checkbox" id="bike" name="bike" value="Bike" />
+                                <input type="checkbox" id="bike" name="bike" value="Bike" checked={props.currentUser.transport.includes('bike')}/>
                                 <label htmlFor="bike"> I have a bike</label>
                             </div>
                             <div>
-                                <input type="checkbox" id="car" name="car" value="Car" />
+                                <input type="checkbox" id="car" name="car" value="Car"  checked={props.currentUser.transport.includes('car')} />
                                 <label htmlFor="car"> I have a car</label>
                             </div>
                             <div>
-                                <input type="checkbox" id="boat" name="boat" value="Boat" />
+                                <input type="checkbox" id="boat" name="boat" value="Boat"  checked={props.currentUser.transport.includes('boat')} />
                                 <label htmlFor="boat"> I have a boat</label>
                             </div>
                             <input type='submit' value='next' />
                         </Stack>
                     </form>
                 </Stack>
-            }
+            } */}
 
         </>
     );

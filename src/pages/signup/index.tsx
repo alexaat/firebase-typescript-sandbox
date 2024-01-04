@@ -18,7 +18,7 @@ const SignUp = () => {
     const navigate = useNavigate();
 
     const clickHandler = () => {
-        navigate('/');
+        navigate('/signin');
     }
 
     const props = ProvideUser();
@@ -30,52 +30,55 @@ const SignUp = () => {
         const email = (event.currentTarget as HTMLFormElement).email.value;
         const password = (event.currentTarget as HTMLFormElement).password.value;
 
-        const currentUser: CurrentUser = {
-            uid: '',
-            name,
-            nick,
-            email,
-            password,
-            photoUrl: '',
-            transport: []
-        }
+        console.log('sign up ',name, nick,email,password)
+        if(selectedImage) console.log('selectedImage ',selectedImage) 
+
+        // const currentUser: CurrentUser = {
+        //     uid: '',
+        //     name,
+        //     nick,
+        //     email,
+        //     password,
+        //     photoUrl: '',
+        //     transport: []
+        // }
         
-        createUserWithEmailAndPassword(auth, email, password)
-            .then(userCredential => {
+        // createUserWithEmailAndPassword(auth, email, password)
+        //     .then(userCredential => {
 
-                const user = userCredential.user;
-                const uid = userCredential.user.uid;
+        //         const user = userCredential.user;
+        //         const uid = userCredential.user.uid;
 
 
-                //Upload Image
-                if(selectedImage){
-                    const ext =  selectedImage.name.split('.').pop();
-                    const url = uuidv4() + '.' + ext;
-                    const imageRef = ref(storage,`/profile-images/${url}`);
+        //         //Upload Image
+        //         if(selectedImage){
+        //             const ext =  selectedImage.name.split('.').pop();
+        //             const url = uuidv4() + '.' + ext;
+        //             const imageRef = ref(storage,`/profile-images/${url}`);
                 
-                    uploadBytes(imageRef, selectedImage).then((snapshot) => {
-                        getDownloadURL(snapshot.ref).then(url => {
-                            updateProfile(user, { photoURL: url }).then(() => {
-                                props?.reload();
-                            });
+        //             uploadBytes(imageRef, selectedImage).then((snapshot) => {
+        //                 getDownloadURL(snapshot.ref).then(url => {
+        //                     updateProfile(user, { photoURL: url }).then(() => {
+        //                         props?.reload();
+        //                     });
 
-                        });
-                    })
-                    .catch(e => console.log(e));                
-                }
+        //                 });
+        //             })
+        //             .catch(e => console.log(e));                
+        //         }
 
-                addDoc(collection(db, 'users'), {
-                    uid,
-                    name
-                })
-                    .then(() => {
-                        updateProfile(user, { displayName: currentUser.nick }).then(() => {
-                            props?.reload();
-                            navigate('/home')
-                        })
-                    })
-            })
-            .catch(err => alert(err))
+        //         addDoc(collection(db, 'users'), {
+        //             uid,
+        //             name
+        //         })
+        //             .then(() => {
+        //                 updateProfile(user, { displayName: currentUser.nick }).then(() => {
+        //                     props?.reload();
+        //                     navigate('/home')
+        //                 })
+        //             })
+        //     })
+        //     .catch(err => alert(err))
     }
 
     const onImageSelectedHandler = (event: React.ChangeEvent<HTMLInputElement>) => {        
