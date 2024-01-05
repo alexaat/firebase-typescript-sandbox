@@ -1,25 +1,33 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { CurrentUser } from "../types/CurrentUser";
-import { auth, db } from "../services/firebase/firebase-setup";
-import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs } from "firebase/firestore";
 import { User } from "../types/User";
 import { firebaseAuthStateListener } from "../services/firebase/auth";
+import { firebaseGetUserInfo } from "../services/firebase/firestore";
 
 const UserContext = createContext<User | undefined | null>(undefined);
 export const ProvideUser = () => useContext(UserContext)
 export const UserProvider = ({children} : {children : React.ReactNode}) => {
     
     const [user, setUser] = useState<User | undefined | null>(undefined);
-    
+    const [refreshUser, setRefreshUser] = useState(1);
+    const reloadUser = () => setRefreshUser(Math.random());
+
     const authCallback = (user: User | null | undefined) => {
-        console.log('user: ',user)
-        setUser(user);
+        if(user){
+            firebaseGetUserInfo(userInfo => {
+                    if(user.uid === userInfo.uid){
+                        user.name = userInfo.name;                                               
+                    }
+                    setUser(user);
+                }
+            );
+        }else{
+            setUser(user);
+        }       
     }
 
     useEffect(() => {
        return firebaseAuthStateListener(authCallback);      
-    },[]);
+    },[refreshUser]);
 
 
     return(    

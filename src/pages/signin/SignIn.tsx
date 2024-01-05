@@ -14,6 +14,7 @@ const SignIn = () => {
         const email = (event.currentTarget as HTMLFormElement).email.value;
         const password = (event.currentTarget as HTMLFormElement).password.value;
         firebaseLogIn(email, password);
+        navigate('/');
 
         // signInWithEmailAndPassword(auth, email, password)
         //     .then(() => {

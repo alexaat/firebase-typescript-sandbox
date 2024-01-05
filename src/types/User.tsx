@@ -6,3 +6,8 @@ export interface User {
     password: string,
     photoUrl: string,   
 }
+
+export interface UserInfo {
+    uid: string,
+    name: string
+}

@@ -1,19 +1,10 @@
-import { Navigate } from "react-router-dom";
-import { ProvideUser } from "../../context/UserContext";
 import { Stack } from "@mui/material";
-import { auth, db } from "../../services/firebase/firebase-setup";
-import { collection, query, where, getDocs, updateDoc, doc } from "firebase/firestore";
-import {Typography, Box, Button} from "@mui/material";
-import { firebaseLogOut } from "../../services/firebase/auth";
+import { useEffect, useState } from "react";
+import { firebaseGetTransport, firebaseSaveTransport } from "../../services/firebase/firestore";
 
 
 const Home = () => {
     
-    const user = ProvideUser();
-
-    const handleLogOut = () => firebaseLogOut();
-    
-
     /*
     if (props?.currentUser === null) {
         return <Navigate to='/' />
@@ -48,12 +39,50 @@ const Home = () => {
     }
     */
 
+    const [transport, setTransport] = useState<string []>([]);
+   
+    useEffect(() => {
+        firebaseGetTransport(vehicles => {           
+            setTransport(vehicles)});
+    },[]);
+
+
+    const onCheckedHandler = (e : React.ChangeEvent<HTMLInputElement>) => {
+        const name = e.target.name;
+        if(transport.includes(name)){
+            setTransport(prev =>{
+                const modified = [...prev.filter(tr => tr!==name)];
+                firebaseSaveTransport(modified);
+                return  modified;
+            });
+        }else{            
+            setTransport(prev =>{
+                const modified =  [...prev, name];
+                firebaseSaveTransport(modified);
+                return  modified;
+            });            
+        }
+    } 
+
     return (
         <>
-        <Stack direction='row'>
-        <Typography>{user?.email}</Typography>      
-        <Button variant="outlined" sx={{ color: '#000', ml: 2 }} onClick={handleLogOut}>Log OUT</Button>        
-        </Stack>
+            <Stack sx={{ ml: 1, mt: 1, width: '128px' }}>               
+                    <Stack>
+                        <div>
+                            <input type="checkbox" id="bike" name="bike" value="Bike" checked={transport && transport.includes('bike')} onChange={onCheckedHandler}/>
+                            <label htmlFor="bike"> I have a bike</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="car" name="car" value="Car"  checked={transport && transport.includes('car')} onChange={onCheckedHandler}/>
+                            <label htmlFor="car"> I have a car</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="boat" name="boat" value="Boat"  checked={transport && transport.includes('boat')} onChange={onCheckedHandler}/>
+                            <label htmlFor="boat"> I have a boat</label>
+                        </div>                           
+                    </Stack>                  
+            </Stack>
+            
 
             {/* {props?.currentUser &&
                 <Stack sx={{ ml: 1, mt: 1, width: '128px' }}>

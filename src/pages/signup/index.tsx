@@ -1,14 +1,9 @@
 import { Stack, Button, Box } from '@mui/material';
-import { CurrentUser } from '../../types/CurrentUser';
 import { useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth, storage } from '../../services/firebase/firebase-setup';
-import { collection, addDoc } from "firebase/firestore";
-import { db } from '../../services/firebase/firebase-setup';
 import { ProvideUser } from '../../context/UserContext';
 import { useState } from 'react';
-import {  ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { v4 as uuidv4 } from 'uuid';
+import { firebaseRegister } from '../../services/firebase/auth';
+
 
 
 const SignUp = () => {
@@ -21,8 +16,6 @@ const SignUp = () => {
         navigate('/signin');
     }
 
-    const props = ProvideUser();
-
     const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const name = (event.currentTarget as HTMLFormElement).first_name.value;
@@ -32,6 +25,18 @@ const SignUp = () => {
 
         console.log('sign up ',name, nick,email,password)
         if(selectedImage) console.log('selectedImage ',selectedImage) 
+
+        firebaseRegister(name, nick, email, password, selectedImage, () => {
+            console.log('navigate to /');
+            navigate('/');
+            //console.log(userCredential.user.uid);
+            // const uid = userCredential.user.uid;
+            // const userInfo : UserInfo = {
+            //     uid: uid,
+            //     name: name
+            // }        
+            // firebaseSaveUserInfo(userInfo, () => {})
+        })
 
         // const currentUser: CurrentUser = {
         //     uid: '',

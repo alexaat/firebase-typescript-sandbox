@@ -54,7 +54,17 @@ function App() {
       [
         {   
           path: '/',
-          element: <Home/>       
+          element: <Root/>,
+          children : [
+            {
+              path: "/",
+              element: <Home />         
+            },
+            {
+              path: "*",
+              element: <Error />         
+            }
+          ]
         },
         {   
             path: 'signup',
