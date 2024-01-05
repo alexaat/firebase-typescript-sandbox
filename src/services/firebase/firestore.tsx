@@ -55,8 +55,8 @@ export const firebaseSaveTransport = (data: string[]) => {
     }  
 }
 
-export const firebaseSaveUserInfo = (userInfo: UserInfo) => {
+export const firebaseSaveUserInfo = (userInfo: UserInfo, callback: () => void) => {
     setDoc(doc(db, 'user_info', userInfo.uid), {
         name: userInfo.name
-    });    
+    }).then(callback);    
 }

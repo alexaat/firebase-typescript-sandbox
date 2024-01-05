@@ -3,13 +3,16 @@ import { User } from "../types/User";
 import { firebaseAuthStateListener } from "../services/firebase/auth";
 import { firebaseGetUserInfo } from "../services/firebase/firestore";
 
-const UserContext = createContext<User | undefined | null>(undefined);
+const UserContext = createContext<{user: User | undefined | null, reloadUser: () => void}>({user: undefined, reloadUser: () =>{}});
 export const ProvideUser = () => useContext(UserContext)
 export const UserProvider = ({children} : {children : React.ReactNode}) => {
     
     const [user, setUser] = useState<User | undefined | null>(undefined);
     const [refreshUser, setRefreshUser] = useState(1);
-    const reloadUser = () => setRefreshUser(Math.random());
+    const reloadUser = () => {
+        console.log('reload user')
+        setRefreshUser(Math.random())
+    };
 
     const authCallback = (user: User | null | undefined) => {
         if(user){
@@ -31,12 +34,10 @@ export const UserProvider = ({children} : {children : React.ReactNode}) => {
 
 
     return(    
-    <UserContext.Provider value={user}>
+    <UserContext.Provider value={{user, reloadUser}}>
         {children}
     </UserContext.Provider>)
 }
-
-
 
 /*
 type T = {

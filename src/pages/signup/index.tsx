@@ -5,10 +5,12 @@ import { useState } from 'react';
 import { firebaseRegister } from '../../services/firebase/auth';
 
 
-
 const SignUp = () => {
 
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
+
+    const {user, reloadUser} = ProvideUser();
+
 
     const navigate = useNavigate();
 
@@ -23,67 +25,10 @@ const SignUp = () => {
         const email = (event.currentTarget as HTMLFormElement).email.value;
         const password = (event.currentTarget as HTMLFormElement).password.value;
 
-        console.log('sign up ',name, nick,email,password)
-        if(selectedImage) console.log('selectedImage ',selectedImage) 
-
         firebaseRegister(name, nick, email, password, selectedImage, () => {
-            console.log('navigate to /');
             navigate('/');
-            //console.log(userCredential.user.uid);
-            // const uid = userCredential.user.uid;
-            // const userInfo : UserInfo = {
-            //     uid: uid,
-            //     name: name
-            // }        
-            // firebaseSaveUserInfo(userInfo, () => {})
+            reloadUser();           
         })
-
-        // const currentUser: CurrentUser = {
-        //     uid: '',
-        //     name,
-        //     nick,
-        //     email,
-        //     password,
-        //     photoUrl: '',
-        //     transport: []
-        // }
-        
-        // createUserWithEmailAndPassword(auth, email, password)
-        //     .then(userCredential => {
-
-        //         const user = userCredential.user;
-        //         const uid = userCredential.user.uid;
-
-
-        //         //Upload Image
-        //         if(selectedImage){
-        //             const ext =  selectedImage.name.split('.').pop();
-        //             const url = uuidv4() + '.' + ext;
-        //             const imageRef = ref(storage,`/profile-images/${url}`);
-                
-        //             uploadBytes(imageRef, selectedImage).then((snapshot) => {
-        //                 getDownloadURL(snapshot.ref).then(url => {
-        //                     updateProfile(user, { photoURL: url }).then(() => {
-        //                         props?.reload();
-        //                     });
-
-        //                 });
-        //             })
-        //             .catch(e => console.log(e));                
-        //         }
-
-        //         addDoc(collection(db, 'users'), {
-        //             uid,
-        //             name
-        //         })
-        //             .then(() => {
-        //                 updateProfile(user, { displayName: currentUser.nick }).then(() => {
-        //                     props?.reload();
-        //                     navigate('/home')
-        //                 })
-        //             })
-        //     })
-        //     .catch(err => alert(err))
     }
 
     const onImageSelectedHandler = (event: React.ChangeEvent<HTMLInputElement>) => {        

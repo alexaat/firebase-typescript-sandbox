@@ -23,7 +23,7 @@ function App() {
   //   )
   // );
 
-  const user = ProvideUser();
+  const {user, reloadUser} = ProvideUser();
 
   const routes = user === undefined ?
       [
@@ -82,58 +82,6 @@ function App() {
 
   const router = createBrowserRouter(routes);
 
-
-/*******************
-  const auth = ProvideUser();
-
-  const loggedOff = [
-    {
-      path: 'signup',
-      element: <SignUp/>      
-    },
-    {
-      path: '/',
-      element: <SignIn/>,
-      errorElement: <Error />
-    }
-
-  ];
-
-  const loggedIn = [
-    {
-      path: "/",
-      element: <Root />,
-      children: [
-        {
-          path: "/",
-          element: <Home />         
-        },
-        {
-          path: "home",
-          element: <Home />         
-        }
-      ]
-    },
-    {
-      path: 'signup',
-      element: <SignUp/>
-    },
-    {
-      path: 'signin',
-      element: <SignIn/>
-    }
-  ]
-
-  let currentRoute = undefined;
-
-  if(auth !== null && auth.currentUser){
-    currentRoute = loggedIn;
-  }else{
-    currentRoute = loggedOff;
-  }
-
-  const router = createBrowserRouter(currentRoute);
-********************/
   return (
     <div className="App">     
         <RouterProvider router={router} />      
