@@ -1,5 +1,5 @@
 import { UserInfo } from "../../types/User"
-import { getDoc, doc, setDoc } from "firebase/firestore";
+import { getDoc, doc, setDoc, query, collection, getDocs } from "firebase/firestore";
 import { auth, db } from './firebase-setup';
 
 export const firebaseGetUserInfo = (callback : (userInfo: UserInfo) => void) => {
@@ -59,4 +59,16 @@ export const firebaseSaveUserInfo = (userInfo: UserInfo, callback: () => void) =
     setDoc(doc(db, 'user_info', userInfo.uid), {
         name: userInfo.name
     }).then(callback);    
+}
+
+export const firebaseGetAll = (collectionName: string, callback : (data: any[]) => void) => {
+    const q = query(collection(db, collectionName));
+    getDocs(q).then(querySnapshot => {
+        const docs: any[] = [];
+        querySnapshot.forEach(doc => {
+            const item = {id: doc.id, data: doc.data()};
+            docs.push(item);
+        });
+        callback(docs);
+    });
 }

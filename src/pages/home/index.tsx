@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material";
 import { useEffect, useState } from "react";
-import { firebaseGetTransport, firebaseSaveTransport } from "../../services/firebase/firestore";
+import { firebaseGetAll, firebaseGetTransport, firebaseSaveTransport } from "../../services/firebase/firestore";
 
 const Home = () => {
 
@@ -9,6 +9,10 @@ const Home = () => {
     useEffect(() => {
         firebaseGetTransport(vehicles => {           
             setTransport(vehicles)});
+
+        firebaseGetAll('user_info', data => console.log('user_info ',data));    
+        firebaseGetAll('transport', data => console.log('transport ',data));    
+
     },[]);
 
 
